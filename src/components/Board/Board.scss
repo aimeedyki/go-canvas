@@ -1,0 +1,11 @@
+@import '../../theme.scss';
+
+.board {
+  width: 90%;
+  height: 90%;
+  background-color: map-get($colors, light);
+  box-shadow: 0 4px 8px 0 map-get($colors, primary-dark);
+  transition: 0.3s;
+  border-radius: 2px;
+  padding: 8px;
+}
