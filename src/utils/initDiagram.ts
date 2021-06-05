@@ -2,6 +2,23 @@ import * as go from 'gojs';
 
 import { LinkShiftingTool } from './LinkShiftingTool';
 
+const scaleFont = (obj: any, scale: number) => {
+  const adorn = obj.part;
+  adorn.diagram.startTransaction('Change Text Size');
+  const node = adorn.adornedPart;
+  const tb = node.findObject('TEXT');
+  tb.scale *= scale;
+  adorn.diagram.commitTransaction('Change Text Size');
+};
+
+const increaseFont = (e: go.InputEvent, obj: go.GraphObject) => {
+  scaleFont(obj, 2);
+};
+
+const decreaseFont = (e: go.InputEvent, obj: go.GraphObject) => {
+  scaleFont(obj, 0.5);
+};
+
 const initDiagram = (): go.Diagram => {
   const $ = go.GraphObject.make;
 
@@ -37,7 +54,21 @@ const initDiagram = (): go.Diagram => {
       new go.Binding('text', 'key', (k: string) => {
         return `node ${k}`;
       })
-    )
+    ),
+    {
+      contextMenu: $(
+        'ContextMenu',
+        $(
+          'ContextMenuButton',
+          {
+            'ButtonBorder.fill': 'white',
+            _buttonFillOver: '#b2b7c2',
+          },
+          $(go.TextBlock, 'increase font'),
+          { click: increaseFont }
+        )
+      ),
+    }
   );
 
   diagram.toolManager.mouseDownTools.add($(LinkShiftingTool));
@@ -68,7 +99,21 @@ const initDiagram = (): go.Diagram => {
         segmentOrientation: go.Link.OrientPlus90
       },
       new go.Binding('text', 'text')
-    )
+    ),
+    {
+      contextMenu: $(
+        'ContextMenu',
+        $(
+          'ContextMenuButton',
+          {
+            'ButtonBorder.fill': 'white',
+            _buttonFillOver: '#b2b7c2',
+          },
+          $(go.TextBlock, 'decrease font'),
+          { click: decreaseFont }
+        )
+      ),
+    }
   );
 
   return diagram;
