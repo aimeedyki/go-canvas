@@ -1,5 +1,7 @@
 import * as go from 'gojs';
 
+import { LinkShiftingTool } from './LinkShiftingTool';
+
 const initDiagram = (): go.Diagram => {
   const $ = go.GraphObject.make;
 
@@ -20,6 +22,9 @@ const initDiagram = (): go.Diagram => {
       isLayoutPositioned: false,
       resizable: true,
       locationSpot: go.Spot.Center,
+      fromSpot: go.Spot.AllSides,
+      toSpot: go.Spot.AllSides,
+      fromLinkable: true, toLinkable: true,
     },
     new go.Binding('position', 'bounds', (b) => b.position).makeTwoWay(
       (p, d) => new go.Rect(p.x, p.y, d.bounds.width, d.bounds.height)
@@ -35,6 +40,10 @@ const initDiagram = (): go.Diagram => {
     )
   );
 
+  diagram.toolManager.mouseDownTools.add($(LinkShiftingTool));
+  diagram.toolManager.linkingTool.isEnabled = true;
+  diagram.toolManager.relinkingTool.isEnabled = true;
+
   diagram.linkTemplate = $(
     go.Link,
     new go.Binding('relinkableFrom', 'canRelink').ofModel(),
@@ -44,7 +53,8 @@ const initDiagram = (): go.Diagram => {
       relinkableFrom: true,
       relinkableTo: true,
       adjusting: go.Link.Stretch,
-      isLayoutPositioned: false,
+      isLayoutPositioned: false, 
+      resegmentable: true,
     },
     $(go.Shape),
     $(go.Shape, { toArrow: 'Standard' }),
