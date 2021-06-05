@@ -1,6 +1,13 @@
 import * as go from 'gojs';
 import { Quadtree } from './Quadtree';
 
+export interface Node {
+  key: number;
+  color: string;
+  bounds: go.Rect;
+  label: string;
+}
+
 const computeDocumentBounds = (wholeModel: go.GraphLinksModel): go.Rect => {
   const documentBounds = new go.Rect();
   const nodeData = wholeModel.nodeDataArray;
@@ -24,7 +31,7 @@ export const loadDiagram = (
 ) => {
   const noOfNodes = 10000;
   const sqrt = Math.floor(Math.sqrt(noOfNodes));
-  const nodes = [];
+  const nodes: Node[]  = [];
   const links = [];
   let previousIndex = 0;
 
@@ -35,6 +42,7 @@ export const loadDiagram = (
       key: i,
       color: go.Brush.randomColor(),
       bounds: new go.Rect((i % sqrt) * 100, Math.floor(i / sqrt) * 100, 50, 50),
+      label: `node ${i}`
     };
     nodes.push(node);
     wholeQuadtree.add(node, node.bounds);
@@ -48,4 +56,6 @@ export const loadDiagram = (
   wholeModel.nodeDataArray = nodes;
   wholeModel.linkDataArray = links;
   diagram.fixedBounds = computeDocumentBounds(wholeModel);
+
+  return nodes;
 };

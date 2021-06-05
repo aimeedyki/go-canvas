@@ -854,14 +854,13 @@ export class Quadtree<T> {
     }
 
     for (const obj of root.treeObjects) {
-      if (Quadtree._rectsIntersect(obj.bounds, rect)) {
+      if (this.rectsIntersect(obj.bounds, rect)) {
         returnObjects.push(obj.obj);
       }
     }
   }
 
   /**
-   * @hidden @internal
    * Similar as {@link Rect.intersectsRect}, but doesn't count edges as intersections.
    * Also accounts for floating error (by returning false more often) up to an error of 1e-7.
    * Used by {@link #intersecting}.
@@ -870,7 +869,7 @@ export class Quadtree<T> {
    * @param {Rect} r2 second rectangle
    * @return {boolean} whether or not the two rectangles intersect
    */
-  private static _rectsIntersect(r1: go.Rect, r2: go.Rect): boolean {
+  public rectsIntersect(r1: go.Rect, r2: go.Rect): boolean {
     return !(r2.left + 1e-7 >= r1.right || r2.right - 1e-7 <= r1.left || r2.top + 1e-7 >= r1.bottom || r2.bottom - 1e-7 <= r1.top);
   }
 

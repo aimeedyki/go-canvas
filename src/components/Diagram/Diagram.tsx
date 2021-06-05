@@ -1,10 +1,11 @@
-import { ReactElement, useEffect, useRef, useState } from 'react';
+import { ReactElement, useEffect, useContext, useRef, useState } from 'react';
 import * as go from 'gojs';
 
-import { loadDiagram } from '../../utils';
+import Loader from '../Loader/Loader';
+import { ToolsContext } from '../../context/ToolsContext';
+import { loadDiagram, Node } from '../../utils';
 import initDiagram from '../../utils/initDiagram';
 import { Quadtree } from '../../utils/Quadtree';
-import Loader from '../Loader/Loader';
 
 import './Diagram.scss';
 
@@ -15,6 +16,9 @@ const wholeQuadtree = new Quadtree();
 const Diagram = (): ReactElement => {
   const diagramRef = useRef();
   const [isLoading, setIsLoading] = useState(true);
+  const { nodes, selectedNodeKey, setNodes } = useContext(ToolsContext);
+  const [diagramInstance, setDiagramInstance] = useState<go.Diagram>();
+  const [highlighterInstance, setHighlighter] = useState<go.Part>();
 
   useEffect(() => {
     if (diagramRef.current) {
@@ -26,17 +30,61 @@ const Diagram = (): ReactElement => {
       diagram.addModelChangedListener(onModelChanged);
       diagram.commandHandler.selectAll = () => {};
 
+      const highlighter = $(
+        go.Part,
+        'Auto',
+        {
+          layerName: 'Background',
+          selectable: false,
+          isInDocumentBounds: false,
+          locationSpot: go.Spot.Center,
+        },
+        $(go.Shape, 'Rectangle', {
+          fill: $(go.Brush, 'Radial', { 0.0: 'blue', 1.0: 'white' }),
+          stroke: null,
+          desiredSize: new go.Size(100, 100),
+        })
+      );
+
+      diagram.add(highlighter);
+
       diagram.delayInitialization(() => {
         try {
           loadDiagram(wholeQuadtree, wholeModel, diagram);
+          const wholeNodes = loadDiagram(wholeQuadtree, wholeModel, diagram);
+          setNodes(wholeNodes);
         } finally {
           setIsLoading(false);
         }
       });
 
+      setDiagramInstance(diagram);
+      setHighlighter(highlighter);
+
       return () => diagram.removeModelChangedListener(onModelChanged);
     }
   }, []);
+
+  useEffect(() => {
+    if (selectedNodeKey) {
+      const keyNode = diagramInstance.findNodeForKey(selectedNodeKey);
+
+      if(!keyNode) {
+        const node = nodes.find((node: Node) => node.key === Number(selectedNodeKey));
+        diagramInstance.position = new go.Point(node.bounds.x, node.bounds.y);
+
+        const keyNode = diagramInstance.findNodeForKey(selectedNodeKey);
+        diagramInstance.centerRect(keyNode.actualBounds);
+        diagramInstance.select(keyNode);
+        highlighterInstance.location = keyNode.location;
+      } else {
+        diagramInstance.scrollToRect(keyNode.actualBounds);
+        diagramInstance.select(keyNode);
+        keyNode.isHighlighted = true;
+        highlighterInstance.location = keyNode.location;
+      }
+    }
+  }, [selectedNodeKey]);
 
   function addNode(diagram: go.Diagram, data: go.ObjectData) {
     const { model } = diagram;
