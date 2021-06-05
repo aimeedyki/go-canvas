@@ -1,0 +1,58 @@
+@import '../../theme.scss';
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+
+  &__spinner {
+    position: relative;
+    animation: spin 0.7s infinite linear;
+    background: linear-gradient(
+      to right,
+      map-get($colors, primary-light) 10%,
+      map-get($colors, primary-extra-light) 42%
+    );
+    border-radius: 50%;
+    font-size: 0.2rem;
+    height: 2.5rem;
+    width: 2.5rem;
+    transform: translateZ(0);
+
+    &::before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: map-get($colors, primary-light);
+      border-radius: 100% 0 0 0;
+      content: '';
+      height: 50%;
+      width: 50%;
+    }
+
+    &::after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: map-get($colors, primary-light);
+      border-radius: 50%;
+      content: '';
+      height: 75%;
+      margin: auto;
+      width: 75%;
+    }
+  }
+}
