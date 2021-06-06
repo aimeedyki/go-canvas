@@ -1,4 +1,4 @@
-@import '../../theme.scss';
+@import "../../theme.scss";
 
 @keyframes spin {
   0% {
@@ -21,8 +21,8 @@
     animation: spin 0.7s infinite linear;
     background: linear-gradient(
       to right,
-      map-get($colors, primary-light) 10%,
-      map-get($colors, primary-extra-light) 42%
+      map-get($colors, primary) 10%,
+      map-get($colors, primary-light-200) 42%
     );
     border-radius: 50%;
     font-size: 0.2rem;
@@ -34,9 +34,9 @@
       position: absolute;
       top: 0;
       left: 0;
-      background: map-get($colors, primary-light);
+      background: map-get($colors, primary);
       border-radius: 100% 0 0 0;
-      content: '';
+      content: "";
       height: 50%;
       width: 50%;
     }
@@ -47,9 +47,9 @@
       left: 0;
       bottom: 0;
       right: 0;
-      background: map-get($colors, primary-light);
+      background: map-get($colors, secondary);
       border-radius: 50%;
-      content: '';
+      content: "";
       height: 75%;
       margin: auto;
       width: 75%;

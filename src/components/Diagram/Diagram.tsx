@@ -5,7 +5,7 @@ import Loader from '../Loader/Loader';
 import { ToolsContext } from '../../context/ToolsContext';
 import { loadDiagram, Node } from '../../utils';
 import initDiagram from '../../utils/initDiagram';
-import { Quadtree } from '../../utils/Quadtree';
+import { Quadtree } from '../../utils/extensions/Quadtree';
 
 import './Diagram.scss';
 
@@ -153,9 +153,7 @@ const Diagram = (): ReactElement => {
   }
 
   function onModelChanged(event: go.ChangedEvent) {
-    if(event.propertyName === 'CommittingTransaction') {
-      setIsSaving(true);
-    }
+    if (event.isTransactionFinished) setIsSaving(true);
 
     if (event.model.skipsUndoManager) return;
 

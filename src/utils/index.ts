@@ -1,5 +1,5 @@
 import * as go from 'gojs';
-import { Quadtree } from './Quadtree';
+import { Quadtree } from './extensions/Quadtree';
 
 export interface Node {
   key: number;

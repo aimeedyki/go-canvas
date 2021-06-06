@@ -1,6 +1,6 @@
 import * as go from 'gojs';
 
-import { LinkShiftingTool } from './LinkShiftingTool';
+import { LinkShiftingTool } from './extensions/LinkShiftingTool';
 
 const scaleFont = (obj: any, scale: number) => {
   const adorn = obj.part;

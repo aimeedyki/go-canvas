@@ -10,7 +10,7 @@ const SaveIndicator: FC = () => {
 
   return (
     <div className="save">
-      {isSaving ? <CycleIcon /> : <CheckIcon />}
+      {isSaving ? <CycleIcon className="save__icons" /> : <CheckIcon className="save__icons" />}
       <p className={`save__text ${isSaving ? 'save__text--saving' : ''}`}>
         {isSaving ? 'Saving' : 'Saved'}
       </p>
