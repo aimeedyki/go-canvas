@@ -1,0 +1,11 @@
+@import "../../theme.scss";
+
+.error-boundary {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: map-get($colors, secondary);
+  height: 100vh;
+  width: 100vw;
+}
