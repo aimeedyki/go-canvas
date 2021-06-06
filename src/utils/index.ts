@@ -8,6 +8,15 @@ export interface Node {
   label: string;
 }
 
+const getColor = () => {
+  const red = Math.floor(Math.random() * 256);
+  const green = Math.floor(Math.random() * 256);
+  const blue = Math.floor(Math.random() * 256);
+  const color = `rgb(${red},${green},${blue})`;
+
+  return color;
+}
+
 const computeDocumentBounds = (wholeModel: go.GraphLinksModel): go.Rect => {
   const documentBounds = new go.Rect();
   const nodeData = wholeModel.nodeDataArray;
@@ -34,13 +43,14 @@ export const loadDiagram = (
   const nodes: Node[]  = [];
   const links = [];
   let previousIndex = 0;
+  let linkLabelNo = 0;
 
   wholeQuadtree.clear();
 
   for (let i = 1; i <= noOfNodes; i += 1) {
     const node = {
       key: i,
-      color: go.Brush.randomColor(),
+      color: getColor(),
       bounds: new go.Rect((i % sqrt) * 100, Math.floor(i / sqrt) * 100, 50, 50),
       label: `node ${i}`
     };
@@ -50,7 +60,8 @@ export const loadDiagram = (
     if ((i !== 1 && i - 1 === previousIndex) || i === noOfNodes) continue;
 
     previousIndex = i;
-    links.push({ key: i * -1, from: i, to: i + 1, text: `${i} to ${i + 1}` });
+    linkLabelNo += 1;
+    links.push({ key: i * -1, from: i, to: i + 1, text: `link ${linkLabelNo}` });
   }
 
   wholeModel.nodeDataArray = nodes;

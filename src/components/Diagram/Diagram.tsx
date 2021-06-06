@@ -13,12 +13,27 @@ const $ = go.GraphObject.make;
 const wholeModel = $(go.GraphLinksModel);
 const wholeQuadtree = new Quadtree();
 
+const highlighter = $(
+  go.Part,
+  'Auto',
+  {
+    layerName: 'Background',
+    selectable: false,
+    isInDocumentBounds: false,
+    locationSpot: go.Spot.Center,
+  },
+  $(go.Shape, 'Rectangle', {
+    fill: $(go.Brush, 'Radial', { 0.0: 'blue', 1.0: 'white' }),
+    stroke: null,
+    desiredSize: new go.Size(100, 100),
+  })
+);
+
 const Diagram = (): ReactElement => {
   const diagramRef = useRef();
   const [isLoading, setIsLoading] = useState(true);
   const { nodes, selectedNodeKey, setIsSaving, setNodes } = useContext(ToolsContext);
   const [diagramInstance, setDiagramInstance] = useState<go.Diagram>();
-  const [highlighterInstance, setHighlighter] = useState<go.Part>();
 
   useEffect(() => {
     if (diagramRef.current) {
@@ -29,24 +44,6 @@ const Diagram = (): ReactElement => {
       diagram.addDiagramListener('ViewportBoundsChanged', onViewportChanged);
       diagram.addModelChangedListener(onModelChanged);
       diagram.commandHandler.selectAll = () => {};
-
-      const highlighter = $(
-        go.Part,
-        'Auto',
-        {
-          layerName: 'Background',
-          selectable: false,
-          isInDocumentBounds: false,
-          locationSpot: go.Spot.Center,
-        },
-        $(go.Shape, 'Rectangle', {
-          fill: $(go.Brush, 'Radial', { 0.0: 'blue', 1.0: 'white' }),
-          stroke: null,
-          desiredSize: new go.Size(100, 100),
-        })
-      );
-
-      diagram.add(highlighter);
 
       diagram.delayInitialization(() => {
         try {
@@ -59,7 +56,6 @@ const Diagram = (): ReactElement => {
       });
 
       setDiagramInstance(diagram);
-      setHighlighter(highlighter);
 
       return () => diagram.removeModelChangedListener(onModelChanged);
     }
@@ -69,20 +65,23 @@ const Diagram = (): ReactElement => {
     if (selectedNodeKey) {
       const keyNode = diagramInstance.findNodeForKey(selectedNodeKey);
 
-      if(!keyNode) {
+      if (!highlighter.diagram) diagramInstance.add(highlighter);
+
+      if (!keyNode) {
         const node = nodes.find((node: Node) => node.key === Number(selectedNodeKey));
         diagramInstance.position = new go.Point(node.bounds.x, node.bounds.y);
 
         const keyNode = diagramInstance.findNodeForKey(selectedNodeKey);
         diagramInstance.centerRect(keyNode.actualBounds);
         diagramInstance.select(keyNode);
-        highlighterInstance.location = keyNode.location;
+        highlighter.location = keyNode.location;
       } else {
         diagramInstance.scrollToRect(keyNode.actualBounds);
         diagramInstance.select(keyNode);
-        keyNode.isHighlighted = true;
-        highlighterInstance.location = keyNode.location;
+        highlighter.location = keyNode.location;
       }
+    } else {
+      diagramInstance?.remove(highlighter);
     }
   }, [selectedNodeKey]);
 
@@ -122,7 +121,7 @@ const Diagram = (): ReactElement => {
       for (let i = 0; i < ldata.length; i++) {
         const l = ldata[i];
         if (model.containsLinkData(l)) continue;
-        
+
         const fromkey = wholeModel.getFromKeyForLinkData(l);
         if (fromkey === undefined) continue;
 
