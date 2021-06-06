@@ -16,7 +16,7 @@ const wholeQuadtree = new Quadtree();
 const Diagram = (): ReactElement => {
   const diagramRef = useRef();
   const [isLoading, setIsLoading] = useState(true);
-  const { nodes, selectedNodeKey, setNodes } = useContext(ToolsContext);
+  const { nodes, selectedNodeKey, setIsSaving, setNodes } = useContext(ToolsContext);
   const [diagramInstance, setDiagramInstance] = useState<go.Diagram>();
   const [highlighterInstance, setHighlighter] = useState<go.Part>();
 
@@ -153,7 +153,12 @@ const Diagram = (): ReactElement => {
   }
 
   function onModelChanged(event: go.ChangedEvent) {
+    if(event.propertyName === 'CommittingTransaction') {
+      setIsSaving(true);
+    }
+
     if (event.model.skipsUndoManager) return;
+
     if (event.change === go.ChangedEvent.Property) {
       if (event.propertyName === 'bounds') {
         wholeQuadtree.move(event.object, event.newValue.bounds.x, event.newValue.bounds.y);

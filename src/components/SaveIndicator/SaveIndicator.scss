@@ -1,0 +1,16 @@
+@import '../../theme.scss';
+
+.save {
+  margin-inline-end: 32px;
+  height: 48px;
+  text-align: center;
+
+  &__text {
+    margin-block-start: 0;
+    color: map-get($colors, primary-light);
+
+    &--saving {
+      color: map-get($colors, primary-tint);      
+    }
+  }
+}
