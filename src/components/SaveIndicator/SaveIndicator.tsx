@@ -1,21 +1,26 @@
-import { FC, useContext } from 'react';
+import { ReactElement } from 'react';
 
-import { ToolsContext } from '../../context/ToolsContext';
 import CheckIcon from '../../assets/icons/check-mark-button.svg';
 import CycleIcon from '../../assets/icons/recycle.svg';
 import './SaveIndicator.scss';
 
-const SaveIndicator: FC = () => {
-  const { isSaving } = useContext(ToolsContext);
-
+const SaveIndicator = ({ isSaving }: SaveIndicatorProps): ReactElement => {
   return (
-    <div className="save">
-      {isSaving ? <CycleIcon className="save__icons" /> : <CheckIcon className="save__icons" />}
-      <p className={`save__text ${isSaving ? 'save__text--saving' : ''}`}>
+    <div className="save-indicator" data-testid="save-indicator">
+      {isSaving ? (
+        <CycleIcon className="save-indicator__icons" />
+      ) : (
+        <CheckIcon className="save-indicator__icons" />
+      )}
+      <p className={`save-indicator__text ${isSaving ? 'save-indicator__text--saving' : ''}`}>
         {isSaving ? 'Saving' : 'Saved'}
       </p>
     </div>
   );
 };
+
+interface SaveIndicatorProps {
+  isSaving: boolean;
+}
 
 export default SaveIndicator;
