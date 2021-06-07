@@ -10,7 +10,7 @@ const renderDropdown = () => {
         { key: 2, label: 'key 2' },
         { key: 3, label: 'key 3' },
       ]}
-      onChange={jest.fn()}
+      onItemSelect={jest.fn()}
       value=""
     />
   );

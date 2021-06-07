@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, useContext } from 'react';
+import { FC, useCallback, useContext } from 'react';
 
 import Dropdown from '../Dropdown/Dropdown';
 import SaveIndicator from '../SaveIndicator/SaveIndicator';
@@ -9,9 +9,9 @@ import './Header.scss';
 const Header: FC = () => {
   const { isSaving, nodes, selectedNodeKey, setSelectedNodeKey } = useContext(ToolsContext);
 
-  const handleNodeSelection = (event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedNodeKey(event.target.value);
-  };
+  const handleNodeSelection = useCallback((value: string) => {
+    setSelectedNodeKey(value);
+  }, []);
 
   return (
     <header className="header" data-testid="header">
@@ -19,10 +19,10 @@ const Header: FC = () => {
       <div className="header__tools">
         <SaveIndicator isSaving={isSaving} />
         <Dropdown
-          label="Highlight a node"
+          label={selectedNodeKey ? 'Remove highlight' : 'Highlight a node'}
           list={nodes}
           value={selectedNodeKey}
-          onChange={handleNodeSelection}
+          onItemSelect={handleNodeSelection}
         />
       </div>
     </header>

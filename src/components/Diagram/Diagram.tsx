@@ -69,12 +69,14 @@ const Diagram = (): ReactElement => {
 
       if (!keyNode) {
         const node = nodes.find((node: Node) => node.key === Number(selectedNodeKey));
-        diagramInstance.position = new go.Point(node.bounds.x, node.bounds.y);
 
-        const keyNode = diagramInstance.findNodeForKey(selectedNodeKey);
-        diagramInstance.centerRect(keyNode.actualBounds);
-        diagramInstance.select(keyNode);
-        highlighter.location = keyNode.location;
+        if (node) {
+          diagramInstance.position = new go.Point(node.bounds.x, node.bounds.y);
+          const keyNode = diagramInstance.findNodeForKey(selectedNodeKey);
+          diagramInstance.centerRect(keyNode.actualBounds);
+          diagramInstance.select(keyNode);
+          highlighter.location = keyNode.location;
+        }
       } else {
         diagramInstance.scrollToRect(keyNode.actualBounds);
         diagramInstance.select(keyNode);

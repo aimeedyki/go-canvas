@@ -94,7 +94,7 @@ const initDiagram = (): go.Diagram => {
       {
         name: 'TEXT',
         minSize: new go.Size(30, 15),
-        segmentIndex: 1, 
+        segmentIndex: 2, 
         segmentFraction: 1,
         segmentOrientation: go.Link.OrientPlus90
       },

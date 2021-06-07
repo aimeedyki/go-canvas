@@ -1,10 +1,10 @@
-import { ReactElement } from 'react';
+import { memo, ReactElement } from 'react';
 
 import CheckIcon from '../../assets/icons/check-mark-button.svg';
 import CycleIcon from '../../assets/icons/recycle.svg';
 import './SaveIndicator.scss';
 
-const SaveIndicator = ({ isSaving }: SaveIndicatorProps): ReactElement => {
+const SaveIndicator = memo(({ isSaving }: SaveIndicatorProps): ReactElement => {
   return (
     <div className="save-indicator" data-testid="save-indicator">
       {isSaving ? (
@@ -17,7 +17,7 @@ const SaveIndicator = ({ isSaving }: SaveIndicatorProps): ReactElement => {
       </p>
     </div>
   );
-};
+});
 
 interface SaveIndicatorProps {
   isSaving: boolean;
